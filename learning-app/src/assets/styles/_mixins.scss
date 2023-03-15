@@ -1,0 +1,59 @@
+@use "sass:map";
+
+$main-text-color: #ffffff;
+
+$main-bg-color: #252525;
+$secondary-bg-color: #01161a;
+
+// $main-accent: #00d5ff;
+// $secondary-accent: #01161a;
+
+$mobile: 0px;
+$tablet: 768px;
+$desktop: 1200px;
+$lg: $desktop;
+$md: $tablet;
+$sm: 480px;
+$xs: 320px;
+
+$breakpoints: (
+    "sm": $sm,
+    "xs": $xs,
+    "mobile": $mobile,
+    "tablet": $tablet,
+    "desktop": $desktop,
+);
+
+// courtesy of Glenn McComb
+// https://glennmccomb.com/articles/useful-sass-scss-media-query-mixins-for-bootstrap/
+@mixin above($breakpoint) {
+    @if map.has-key($breakpoints, $breakpoint) {
+        $breakpoint-value: map.get($breakpoints, $breakpoint);
+
+        @media (min-width: ($breakpoint-value)) {
+            @content;
+        }
+    }
+
+    @else {
+        @media (min-width: ($breakpoint)) {
+            @content;
+        }
+    }
+}
+
+@mixin below($breakpoint) {
+    @if map.has-key($breakpoints, $breakpoint) {
+        $breakpoint-value: map.get($breakpoints, $breakpoint);
+
+        @media (max-width: ($breakpoint-value - 1px)) {
+            @content;
+        }
+    }
+
+    @else {
+        @media (max-width: ($breakpoint - 1px)) {
+            @content;
+        }
+    }
+}
