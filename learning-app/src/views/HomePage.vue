@@ -95,6 +95,9 @@ export default {
 <style lang="scss" scoped>
 @use "@/assets/styles/_mixins";
 
+hr {
+    margin-bottom: 3rem;
+}
 .courses {
     margin-bottom: 1.5rem;
 

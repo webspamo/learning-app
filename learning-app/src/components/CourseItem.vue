@@ -1,5 +1,5 @@
 <template>
-    <div class="course-item">
+    <div class="item">
         <div class="item-content">
             <h4 class="item-title">
                 {{ title }}
@@ -12,6 +12,10 @@
                     {{ tag }}
                 </li>
             </ul>
+            <div class="item-rating-wrapper">
+                <div class="rating">{{ rating }}</div>
+            </div>
+
             <div class="item-text-details">
                 <p class="item-description">
                     {{ description }}
@@ -24,6 +28,9 @@
                         {{ skill }}
                     </li>
                 </ul>
+            </div>
+            <div class="item-controls">
+                <button class="item-more-button button">More &#8594;</button>
             </div>
         </div>
 
@@ -72,7 +79,8 @@ hr {
     margin: 0.5rem 0;
 }
 
-.course-item {
+.item {
+    position: relative;
     height: 340px;
     padding: 1.5rem;
     background: rgba(255, 255, 255, 0.2);
@@ -81,75 +89,98 @@ hr {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-}
-.item-content {
-    flex-grow: 1;
-    align-self: stretch;
 
-    display: flex;
-    flex-direction: column;
-}
+    &-content {
+        flex-grow: 1;
+        align-self: stretch;
 
-.item-title {
-    //min-height: 3em;
-    font-size: 1.6rem;
-    //line-height: 1.5;
-}
-.item-tags {
-    margin-bottom: 0.5rem;
-    list-style: none;
+        display: flex;
+        flex-direction: column;
+        & > :not(:first-child) {
+            margin-bottom: 0.5rem;
+        }
+    }
 
-    display: flex;
-    .tag {
-        padding: 0.1rem 0.35rem;
+    &-title {
+        //min-height: 3em;
+        font-size: 1.6rem;
+        //line-height: 1.5;
+    }
+    &-tags {
+        list-style: none;
+
+        display: flex;
+        .tag {
+            padding: 0.1rem 0.35rem;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+    }
+    &-rating-wrapper {
+        position: absolute;
+        top: -1.3rem;
+        right: -1.5rem;
+        z-index: 1;
+        width: 4.0625rem;
+        height: 3.4375rem;
+        padding: 0.8rem 1.3rem;
+        font-size: 1.25rem;
         border-radius: 5px;
-        background: rgba(255, 255, 255, 0.2);
-    }
-}
+        background: #252525;
 
-.item-text-details {
-    overflow-y: auto;
-
-    &::-webkit-scrollbar {
-        width: 10px;
-        width: 10px;
-    }
-    &::-webkit-scrollbar-track {
-        border-radius: 5px;
-        background-color: #dfe9eb20;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    &::-webkit-scrollbar-thumb {
-        border-radius: 5px;
-        background-color: #fdc500;
+    &-text-details {
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 10px;
+            width: 10px;
+        }
+        &::-webkit-scrollbar-track {
+            border-radius: 5px;
+            background-color: #dfe9eb20;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background-color: #fdc500;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: #fdd300;
+        }
+
+        &-description {
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 
-    &::-webkit-scrollbar-thumb:hover {
-        background-color: #fdd300;
+    &-controls {
+        margin-top: auto;
     }
 
-    .item-description {
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
+    .item-video-content {
+        //flex-grow: 1;
+        max-width: 45%;
 
-.item-video-content {
-    //flex-grow: 1;
-    max-width: 45%;
+        // display: flex;
+        // flex-direction: column;
+        // justify-content: center;
 
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-
-    .item-preview-image {
-        object-fit: cover;
-    }
-    .item-preview-video {
-        display: none;
+        &-preview-image {
+            object-fit: cover;
+        }
+        &-preview-video {
+            display: none;
+        }
     }
 }
 </style>
