@@ -59,13 +59,7 @@ export default {
     data() {
         return {};
     },
-    computed: {
-        displayedRecords() {
-            const startIndex = this.perPage * (this.page - 1);
-            const endIndex = startIndex + this.perPage;
-            return this.records.slice(startIndex, endIndex);
-        },
-    },
+    computed: {},
     mounted() {},
 };
 </script>

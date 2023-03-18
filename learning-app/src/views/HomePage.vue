@@ -6,7 +6,7 @@
                 <hr />
                 <div class="courses">
                     <CourseItem
-                        v-for="course in courses"
+                        v-for="course in pageItems"
                         :key="course.id"
                         :title="course.title"
                         :description="course.description"
@@ -29,6 +29,16 @@
                         ">
                     </CourseItem>
                 </div>
+                <div class="pagination-toolbar">
+                    <div class="button-pages">
+                        <button
+                            v-for="(page, index) in pages"
+                            :key="index"
+                            @click.prevent="currentPage = page">
+                            {{ page }}
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -45,18 +55,32 @@ export default {
     data() {
         return {
             courses: [],
+            itemsPerPage: 10,
+            currentPage: 1,
         };
     },
-    computed: {},
+    computed: {
+        pageItems() {
+            for (
+                let i =
+                    this.currentPage * this.itemsPerPage - this.itemsPerPage;
+                i < this.courses.length;
+                i += this.itemsPerPage
+            ) {
+                return this.courses.slice(i, i + this.itemsPerPage);
+            }
+        },
+        pages() {
+            return Math.ceil(this.courses.length / this.itemsPerPage);
+        },
+    },
     methods: {
         async updateCourses() {
             try {
                 const courses = await getCourses();
                 this.courses = courses.data.courses;
-                console.log(this.courses);
-                console.log(this.courses.map((e) => e.meta));
-                console.log(this.courses[0].meta.skills);
-                console.log(this.courses[1].meta.courseVideoPreview);
+                console.log(this.courses); //demonstration purpose
+                console.log(this.courses.map((e) => e.meta)); //demonstration purpose
             } catch (err) {
                 console.log(err);
             }
