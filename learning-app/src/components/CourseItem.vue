@@ -96,7 +96,7 @@ hr {
 
         display: flex;
         flex-direction: column;
-        & > :not(:first-child) {
+        & > :not(:first-child, :last-child) {
             margin-bottom: 0.5rem;
         }
     }
