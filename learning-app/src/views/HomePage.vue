@@ -30,14 +30,14 @@
                     </CourseItem>
                 </div>
                 <div class="pagination-toolbar">
-                    <div class="button-pages">
-                        <button
-                            v-for="(page, index) in pages"
-                            :key="index"
-                            @click.prevent="currentPage = page">
-                            {{ page }}
-                        </button>
-                    </div>
+                    <button
+                        class="button"
+                        :class="page == currentPage ? 'button-active' : ''"
+                        v-for="(page, index) in pages"
+                        :key="index"
+                        @click.prevent="currentPage = page">
+                        {{ page }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -96,8 +96,15 @@ export default {
 @use "@/assets/styles/_mixins";
 
 .courses {
+    margin-bottom: 1.5rem;
+
     display: flex;
     flex-direction: column;
     gap: 3rem;
+}
+
+.pagination-toolbar {
+    display: flex;
+    gap: 0.3125rem;
 }
 </style>
