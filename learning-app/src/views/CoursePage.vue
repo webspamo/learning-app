@@ -93,7 +93,11 @@ export default {
             isHovered: false,
         };
     },
-    computed: {},
+    computed: {
+        courseVideoPreviewLink() {
+            return this.course?.meta?.courseVideoPreview?.link;
+        },
+    },
     methods: {
         convertDate(isoFormat) {
             return new Date(isoFormat).toDateString();
@@ -111,13 +115,12 @@ export default {
     created() {
         this.courseId = this.$route.params.courseId;
     },
-    mounted() {
-        this.updateCourse();
+    async mounted() {
+        await this.updateCourse();
 
         if (Hls.isSupported()) {
             let hls = new Hls();
-            let stream =
-                "https://wisey.app/videos/lack-of-motivation-how-to-overcome-it/preview/AppleHLS1/preview.m3u8";
+            let stream = this.courseVideoPreviewLink;
             let video = this.$refs["video"];
 
             hls.loadSource(stream);
@@ -127,8 +130,7 @@ export default {
     watch: {
         async isHovered(newValue) {
             let video = this.$refs["video"];
-            let stream =
-                "https://wisey.app/videos/lack-of-motivation-how-to-overcome-it/preview/AppleHLS1/preview.m3u8";
+            let stream = this.courseVideoPreviewLink;
             if (!video || !stream) return;
 
             if (newValue) {
@@ -143,6 +145,7 @@ export default {
 <style lang="scss" scoped>
 @use "@/assets/styles/_mixins";
 .course-container {
+    border-radius: 5px;
     background: rgba(255, 255, 255, 0.07);
     color: rgba(255, 255, 255, 0.75);
 }
