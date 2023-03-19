@@ -30,6 +30,8 @@
                             course.previewImageLink && course.previewImageLink
                         ">
                     </CourseItem>
+
+                    <div v-if="!courses.length">Empty</div>
                 </div>
 
                 <div class="pagination-toolbar">
@@ -82,10 +84,9 @@ export default {
             try {
                 const courses = await getCourses();
                 this.courses = courses.data.courses;
-                console.log(this.courses); //demonstration purpose
-                console.log(this.courses.map((e) => e.meta)); //demonstration purpose
             } catch (err) {
                 console.log(err);
+                this.courses = [];
             }
         },
     },

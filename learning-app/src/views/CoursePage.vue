@@ -2,47 +2,54 @@
     <main>
         <div class="section">
             <div class="container course-container">
-                <aside class="course-aside">
-                    <nav class="lessons-list">
-                        <a
-                            href=""
-                            class="lesson"
-                            v-for="(lesson, index) in course.lessons"
-                            :key="index">
-                            <div class="lesson-content">
-                                <div class="lesson-title">
-                                    {{ lesson.title }}
+                <div
+                    v-if="course"
+                    class="course-wrapper">
+                    <aside class="course-aside">
+                        <nav class="lessons-list">
+                            <a
+                                href=""
+                                class="lesson"
+                                v-for="(lesson, index) in course.lessons"
+                                :key="index">
+                                <div class="lesson-content">
+                                    <div class="lesson-title">
+                                        {{ lesson.title }}
+                                    </div>
+                                </div>
+
+                                <CourseAvailability
+                                    class="lesson-availability"
+                                    v-if="lesson.status === 'locked'"
+                                    v-html="availability" />
+                            </a>
+                        </nav>
+                    </aside>
+
+                    <div class="course">
+                        <div class="course-header">
+                            <div class="title-cover">
+                                <h1 class="course-title">
+                                    {{ course.title }}
+                                </h1>
+                                <div class="course-launch-date">
+                                    <span>Course-start</span>
+                                    <hr />
+                                    <span>
+                                        {{
+                                            convertDate(course.launchDate)
+                                        }}</span
+                                    >
                                 </div>
                             </div>
 
-                            <CourseAvailability
-                                class="lesson-availability"
-                                v-if="lesson.status === 'locked'"
-                                v-html="availability" />
-                        </a>
-                    </nav>
-                </aside>
-
-                <div class="course">
-                    <div class="course-header">
-                        <div class="title-cover">
-                            <h1 class="course-title">
-                                {{ course.title }}
-                            </h1>
-                            <div class="course-launch-date">
-                                <span>Course-start</span>
-                                <hr />
-                                <span>
-                                    {{ convertDate(course.launchDate) }}</span
-                                >
-                            </div>
+                            <CourseTags
+                                class="course-tags"
+                                :tags="course.tags" />
                         </div>
-
-                        <CourseTags
-                            class="course-tags"
-                            :tags="course.tags" />
                     </div>
                 </div>
+                <div v-else>Empty</div>
             </div>
         </div>
     </main>
@@ -63,7 +70,7 @@ export default {
     data() {
         return {
             courseId: "352be3c6-848b-4c19-9e7d-54fe68fef183",
-            course: {},
+            course: null,
             availability: `&#128274;`,
         };
     },
@@ -75,10 +82,11 @@ export default {
         async updateCourse() {
             try {
                 const course = await getCourse(this.courseId);
-                this.course = course.data;
+                this.course = course.adata;
                 console.log(this.course); //demonstration purpose
             } catch (err) {
                 console.log(err);
+                this.course = null;
             }
         },
     },
@@ -96,6 +104,9 @@ export default {
 
     display: flex;
     gap: 3rem;
+}
+
+.course-wrapper {
 }
 
 .course-aside {
