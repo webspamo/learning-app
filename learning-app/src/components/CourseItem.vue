@@ -20,6 +20,7 @@
                 <p class="item-description">
                     {{ description }}
                 </p>
+                <hr />
                 <ul class="item-skills">
                     <li
                         class="skill"
@@ -45,13 +46,19 @@
                 height="290"
                 class="item-preview-image" />
             <video
+                ref="video"
                 src=""
+                controls
+                width="516"
+                height="290"
                 class="item-preview-video"></video>
         </div>
     </div>
 </template>
 
 <script>
+import Hls from "hls.js";
+
 import CourseTags from "../components/CourseTags.vue";
 import CourseAvailability from "./CourseAvailability.vue";
 
@@ -76,7 +83,23 @@ export default {
         };
     },
     computed: {},
-    mounted() {},
+    methods: {},
+    mounted() {
+        if (Hls.isSupported()) {
+            let hls = new Hls();
+            let stream = this.videoPreviewLink;
+            let video = this.$refs["video"];
+
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                console.log("video and hls.js are now bound together !");
+            });
+            hls.loadSource(stream);
+            hls.attachMedia(video);
+            // hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            //     video.play();
+            // });
+        }
+    },
 };
 </script>
 
@@ -84,7 +107,7 @@ export default {
 @use "@/assets/styles/_mixins";
 
 hr {
-    width: 100%;
+    width: 95%;
     margin: 0.5rem 0;
 }
 
@@ -98,6 +121,11 @@ hr {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
+
+    // @include mixins.below(desktop) {
+    //     height: unset;
+    //     flex-direction: column;
+    // }
 
     &-content {
         flex-grow: 1;
@@ -190,9 +218,10 @@ hr {
     .item-video-content {
         .item-preview-image {
             object-fit: cover;
+            display: none;
         }
         .item-preview-video {
-            display: none;
+            //display: none;
         }
     }
 }
