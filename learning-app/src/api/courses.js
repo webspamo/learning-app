@@ -8,3 +8,6 @@ axios.defaults.baseURL = `http://localhost:5173/api/v1`;
 export async function getCourses() {
     return await axios.get("/core/preview-courses");
 }
+export async function getCourse(courseId) {
+    return await axios.get(`/core/preview-courses/${courseId}`);
+}
