@@ -1,19 +1,20 @@
 <template>
     <div class="item">
         <div class="item-content">
-            <h4 class="item-title">
-                {{ title }}
-            </h4>
-            <ul class="item-tags">
-                <li
-                    class="tag"
-                    v-for="(tag, index) in tags"
-                    :key="index">
-                    {{ tag }}
-                </li>
-            </ul>
-            <div class="item-rating-wrapper">
-                <div class="rating">{{ rating }}</div>
+            <h4 class="item-title">{{ title }}</h4>
+
+            <CourseTags
+                class="item-tags"
+                :tags="tags" />
+
+            <div class="item-rating">
+                <div>{{ rating }}</div>
+            </div>
+
+            <div
+                class="item-availability"
+                v-if="!containsLockedLessons">
+                <div>{{ availability }}</div>
             </div>
 
             <div class="item-text-details">
@@ -29,8 +30,11 @@
                     </li>
                 </ul>
             </div>
+
             <div class="item-controls">
-                <button class="item-more-button button">More &#8594;</button>
+                <button class="item-button button">
+                    Enroll now <span>&#8594;</span>
+                </button>
             </div>
         </div>
 
@@ -49,14 +53,17 @@
 </template>
 
 <script>
+import CourseTags from "../components/CourseTags.vue";
+
 export default {
     name: "CourseItem",
-    components: {},
+    components: {CourseTags},
     props: {
         title: String,
         description: String,
         skills: Object,
         rating: Number,
+        containsLockedLessons: Boolean,
         status: String,
         launchDate: String,
         tags: Array,
@@ -64,14 +71,16 @@ export default {
         videoPreviewImageLink: String,
     },
     data() {
-        return {};
+        return {
+            availability: "Free",
+        };
     },
     computed: {},
     mounted() {},
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @use "@/assets/styles/_mixins";
 
 hr {
@@ -96,34 +105,27 @@ hr {
 
         display: flex;
         flex-direction: column;
-        & > :not(:first-child, :last-child) {
-            margin-bottom: 0.5rem;
-        }
     }
 
     &-title {
-        //min-height: 3em;
         font-size: 1.6rem;
-        //line-height: 1.5;
     }
+
     &-tags {
-        list-style: none;
+        margin-bottom: 0.5rem;
 
         display: flex;
-        .tag {
-            padding: 0.1rem 0.35rem;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.2);
-        }
+        gap: 0.5rem;
     }
-    &-rating-wrapper {
+
+    &-rating {
         position: absolute;
-        top: -1.3rem;
+        top: -0.9rem;
         right: -1.5rem;
         z-index: 1;
-        width: 4.0625rem;
-        height: 3.4375rem;
-        padding: 0.8rem 1.3rem;
+        width: 3.8rem;
+        height: 3.5rem;
+        padding: 0.4rem 0.9rem;
         font-size: 1.25rem;
         border-radius: 5px;
         background: #252525;
@@ -132,9 +134,22 @@ hr {
         align-items: center;
         justify-content: center;
     }
+    .item-availability {
+        position: absolute;
+        top: -1.3rem;
+        left: -1.5rem;
+        z-index: 1;
+        padding: 0.4rem 0.9rem;
+        font-size: 1.25rem;
+        color: #252525;
+        font-weight: 500;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.9);
+    }
 
     &-text-details {
         overflow-y: auto;
+        margin-bottom: 0.5rem;
 
         &::-webkit-scrollbar {
             width: 10px;
@@ -162,23 +177,27 @@ hr {
             text-overflow: ellipsis;
         }
     }
+    &-skills {
+        list-style-type: circle;
+    }
 
     &-controls {
         margin-top: auto;
+        .item-button {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            span {
+                font-family: Arial;
+            }
+        }
     }
 
     .item-video-content {
-        //flex-grow: 1;
-        max-width: 45%;
-
-        // display: flex;
-        // flex-direction: column;
-        // justify-content: center;
-
-        &-preview-image {
+        .item-preview-image {
             object-fit: cover;
         }
-        &-preview-video {
+        .item-preview-video {
             display: none;
         }
     }
