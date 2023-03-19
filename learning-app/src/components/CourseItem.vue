@@ -32,22 +32,30 @@
             </div>
 
             <div class="item-controls">
-                <button class="item-button button">
+                <router-link
+                    :to="'/course/' + id"
+                    class="item-button button">
                     Enroll now <span>&#8594;</span>
-                </button>
+                </router-link>
             </div>
         </div>
 
-        <div class="item-video-content">
+        <div
+            class="item-video-content"
+            @mouseenter="isHovered = true"
+            @mouseleave="isHovered = false">
             <img
-                src="https://wisey.app/assets/images/web/course-covers/lack-of-motivation-how-to-overcome-it/cover.webp"
+                v-show="!isHovered"
+                :src="videoPreviewImageLink + '/cover.webp'"
                 alt=""
                 width="516"
                 height="290"
                 class="item-preview-image" />
             <video
+                v-show="isHovered"
                 ref="video"
                 src=""
+                muted
                 controls
                 width="516"
                 height="290"
@@ -66,6 +74,7 @@ export default {
     name: "CourseItem",
     components: {CourseTags, CourseAvailability},
     props: {
+        id: String,
         title: String,
         description: String,
         skills: Object,
@@ -80,6 +89,7 @@ export default {
     data() {
         return {
             availability: "Free",
+            isHovered: false,
         };
     },
     computed: {},
@@ -90,15 +100,21 @@ export default {
             let stream = this.videoPreviewLink;
             let video = this.$refs["video"];
 
-            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                console.log("video and hls.js are now bound together !");
-            });
             hls.loadSource(stream);
             hls.attachMedia(video);
-            // hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            //     video.play();
-            // });
         }
+    },
+    watch: {
+        async isHovered(newValue) {
+            let video = this.$refs["video"];
+            let stream = this.videoPreviewLink;
+            if (!video || !stream) return;
+
+            if (newValue) {
+                video.play();
+                video.currentTime = 0;
+            }
+        },
     },
 };
 </script>
@@ -206,7 +222,9 @@ hr {
     &-controls {
         margin-top: auto;
         .item-button {
-            display: flex;
+            color: black;
+
+            display: inline-flex;
             align-items: center;
             gap: 0.3rem;
             span {
@@ -218,7 +236,6 @@ hr {
     .item-video-content {
         .item-preview-image {
             object-fit: cover;
-            display: none;
         }
         .item-preview-video {
             //display: none;

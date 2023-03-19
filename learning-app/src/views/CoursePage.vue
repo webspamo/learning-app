@@ -36,16 +36,35 @@
                                     <span>Course-start</span>
                                     <hr />
                                     <span>
-                                        {{
-                                            convertDate(course.launchDate)
-                                        }}</span
-                                    >
+                                        {{ convertDate(course.launchDate) }}
+                                    </span>
                                 </div>
                             </div>
 
                             <CourseTags
                                 class="course-tags"
                                 :tags="course.tags" />
+                        </div>
+
+                        <div
+                            class="item-video-content"
+                            @mouseenter="isHovered = true"
+                            @mouseleave="isHovered = false">
+                            <img
+                                v-show="!isHovered"
+                                :src="course.previewImageLink + '/cover.webp'"
+                                alt=""
+                                width="516"
+                                height="290"
+                                class="item-preview-image" />
+                            <video
+                                v-show="isHovered"
+                                ref="video"
+                                muted
+                                controls
+                                width="516"
+                                height="290"
+                                class="item-preview-video"></video>
                         </div>
                     </div>
                 </div>
@@ -57,6 +76,7 @@
 
 <script>
 import {getCourse} from "@/api/courses.js";
+import Hls from "hls.js";
 
 import CourseTags from "../components/CourseTags.vue";
 import CourseAvailability from "../components/CourseAvailability.vue";
@@ -64,14 +84,13 @@ import CourseAvailability from "../components/CourseAvailability.vue";
 export default {
     name: "CoursePage",
     components: {CourseTags, CourseAvailability},
-    props: {
-        //courseId: String,
-    },
+    props: {},
     data() {
         return {
-            courseId: "352be3c6-848b-4c19-9e7d-54fe68fef183",
+            courseId: null,
             course: null,
             availability: `&#128274;`,
+            isHovered: false,
         };
     },
     computed: {},
@@ -89,8 +108,34 @@ export default {
             }
         },
     },
+    created() {
+        this.courseId = this.$route.params.courseId;
+    },
     mounted() {
         this.updateCourse();
+
+        if (Hls.isSupported()) {
+            let hls = new Hls();
+            let stream =
+                "https://wisey.app/videos/lack-of-motivation-how-to-overcome-it/preview/AppleHLS1/preview.m3u8";
+            let video = this.$refs["video"];
+
+            hls.loadSource(stream);
+            hls.attachMedia(video);
+        }
+    },
+    watch: {
+        async isHovered(newValue) {
+            let video = this.$refs["video"];
+            let stream =
+                "https://wisey.app/videos/lack-of-motivation-how-to-overcome-it/preview/AppleHLS1/preview.m3u8";
+            if (!video || !stream) return;
+
+            if (newValue) {
+                video.play();
+                video.currentTime = 0;
+            }
+        },
     },
 };
 </script>
@@ -146,6 +191,7 @@ export default {
     flex-grow: 1;
 
     &-header {
+        margin-bottom: 1.5rem;
     }
     .title-cover {
         display: flex;
@@ -154,19 +200,28 @@ export default {
         }
     }
 
+    .course-launch-date {
+        text-align: right;
+        color: rgb(255, 255, 255);
+        padding: 0.4rem 0.9rem;
+        font-size: 1.25rem;
+        border-radius: 5px;
+        background: rgba(0, 0, 0, 0.3);
+
+        display: flex;
+        flex-direction: column;
+    }
+
     &-tags {
         display: flex;
     }
 }
-.course-launch-date {
-    text-align: right;
-    color: rgb(255, 255, 255);
-    padding: 0.4rem 0.9rem;
-    font-size: 1.25rem;
-    border-radius: 5px;
-    background: rgba(0, 0, 0, 0.3);
 
-    display: flex;
-    flex-direction: column;
+.item-video-content {
+    .item-preview-image {
+        object-fit: cover;
+    }
+    .item-preview-video {
+    }
 }
 </style>
