@@ -100,12 +100,11 @@ export default {
 .course-container {
     background: rgba(255, 255, 255, 0.07);
     color: rgba(255, 255, 255, 0.75);
-
-    display: flex;
-    gap: 3rem;
 }
 
 .course-wrapper {
+    display: flex;
+    gap: 3rem;
 }
 
 .course-aside {
