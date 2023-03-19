@@ -1,13 +1,18 @@
 import {createRouter, createWebHashHistory} from "vue-router";
 
-import HomePage from "@/views/HomePage.vue";
+import CoursesPage from "@/views/CoursesPage.vue";
+import CoursePage from "@/views/CoursePage.vue";
 
 export default createRouter({
     history: createWebHashHistory(),
     routes: [
         {
             path: "/",
-            component: HomePage,
+            component: CoursesPage,
+        },
+        {
+            path: "/course",
+            component: CoursePage,
         },
     ],
 });
