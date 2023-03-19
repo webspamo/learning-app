@@ -12,7 +12,7 @@
                         :id="course.id"
                         :title="course.title"
                         :description="course.description"
-                        :skills="course.meta && course.meta.skills"
+                        :skills="course.meta?.skills"
                         :rating="course.rating"
                         :contains-locked-lessons="course.containsLockedLessons"
                         :status="course.status"
@@ -23,9 +23,7 @@
                         "
                         :tags="course.tags"
                         :video-preview-link="
-                            course.meta &&
-                            course.meta.courseVideoPreview &&
-                            course.meta.courseVideoPreview.link
+                            course.meta?.courseVideoPreview?.link
                         "
                         :video-preview-image-link="
                             course.previewImageLink && course.previewImageLink
