@@ -9,6 +9,7 @@
                     <CourseItem
                         v-for="course in pageItems"
                         :key="course.id"
+                        :id="course.id"
                         :title="course.title"
                         :description="course.description"
                         :skills="course.meta && course.meta.skills"
