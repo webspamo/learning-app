@@ -11,11 +11,10 @@
                 <div>{{ rating }}</div>
             </div>
 
-            <div
+            <CourseAvailability
                 class="item-availability"
-                v-if="!containsLockedLessons">
-                <div>{{ availability }}</div>
-            </div>
+                v-if="!containsLockedLessons"
+                :availability="availability" />
 
             <div class="item-text-details">
                 <p class="item-description">
@@ -54,10 +53,11 @@
 
 <script>
 import CourseTags from "../components/CourseTags.vue";
+import CourseAvailability from "./CourseAvailability.vue";
 
 export default {
     name: "CourseItem",
-    components: {CourseTags},
+    components: {CourseTags, CourseAvailability},
     props: {
         title: String,
         description: String,
@@ -139,12 +139,6 @@ hr {
         top: -1.3rem;
         left: -1.5rem;
         z-index: 1;
-        padding: 0.4rem 0.9rem;
-        font-size: 1.25rem;
-        color: #252525;
-        font-weight: 500;
-        border-radius: 5px;
-        background: rgba(255, 255, 255, 0.9);
     }
 
     &-text-details {
