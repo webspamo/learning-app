@@ -82,8 +82,7 @@ export default {
         async updateCourse() {
             try {
                 const course = await getCourse(this.courseId);
-                this.course = course.adata;
-                console.log(this.course); //demonstration purpose
+                this.course = course.data;
             } catch (err) {
                 console.log(err);
                 this.course = null;
