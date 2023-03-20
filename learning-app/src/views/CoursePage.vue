@@ -2,73 +2,83 @@
     <main>
         <div class="section">
             <div class="container course-container">
-                <div
-                    v-if="course"
-                    class="course-wrapper">
-                    <aside class="course-aside">
-                        <nav class="lessons-list">
-                            <a
-                                href=""
-                                class="lesson"
-                                v-for="(lesson, index) in course.lessons"
-                                :key="index">
-                                <div class="lesson-content">
-                                    <div class="lesson-title">
-                                        {{ lesson.title }}
+                <template v-if="urlLessonId && lesson">
+                    lesson {{ lesson }}
+                </template>
+                <template v-else>
+                    <div
+                        v-if="course"
+                        class="course-wrapper">
+                        <aside class="course-aside">
+                            <nav class="lessons-list">
+                                <router-link
+                                    :to="
+                                        '/course/' + course.id + '/' + lesson.id
+                                    "
+                                    class="lesson"
+                                    v-for="(lesson, index) in course.lessons"
+                                    :key="index">
+                                    <div class="lesson-content">
+                                        <div class="lesson-title">
+                                            {{ lesson.title }}
+                                        </div>
+                                    </div>
+
+                                    <CourseAvailability
+                                        class="lesson-availability"
+                                        v-if="lesson.status === 'locked'"
+                                        v-html="availability" />
+                                </router-link>
+                            </nav>
+                        </aside>
+
+                        <div class="course">
+                            <div class="course-header">
+                                <div class="title-cover">
+                                    <h1 class="course-title">
+                                        {{ course.title }}
+                                    </h1>
+                                    <div class="course-launch-date">
+                                        <span>Course-start</span>
+                                        <hr />
+                                        <span>
+                                            {{ convertDate(course.launchDate) }}
+                                        </span>
                                     </div>
                                 </div>
 
-                                <CourseAvailability
-                                    class="lesson-availability"
-                                    v-if="lesson.status === 'locked'"
-                                    v-html="availability" />
-                            </a>
-                        </nav>
-                    </aside>
-
-                    <div class="course">
-                        <div class="course-header">
-                            <div class="title-cover">
-                                <h1 class="course-title">
-                                    {{ course.title }}
-                                </h1>
-                                <div class="course-launch-date">
-                                    <span>Course-start</span>
-                                    <hr />
-                                    <span>
-                                        {{ convertDate(course.launchDate) }}
-                                    </span>
-                                </div>
+                                <CourseTags
+                                    class="course-tags"
+                                    :tags="course.tags" />
                             </div>
 
-                            <CourseTags
-                                class="course-tags"
-                                :tags="course.tags" />
-                        </div>
-
-                        <div
-                            class="item-video-content"
-                            @mouseenter="isHovered = true"
-                            @mouseleave="isHovered = false">
-                            <img
-                                v-show="!isHovered"
-                                :src="course.previewImageLink + '/cover.webp'"
-                                alt=""
-                                width="516"
-                                height="290"
-                                class="item-preview-image" />
-                            <video
-                                v-show="isHovered"
-                                ref="video"
-                                muted
-                                controls
-                                width="516"
-                                height="290"
-                                class="item-preview-video"></video>
+                            <div
+                                class="item-video-content"
+                                @mouseenter="isHovered = true"
+                                @mouseleave="isHovered = false">
+                                <img
+                                    v-show="!isHovered"
+                                    :src="
+                                        course.previewImageLink + '/cover.webp'
+                                    "
+                                    alt=""
+                                    width="516"
+                                    height="290"
+                                    class="item-preview-image" />
+                                <video
+                                    v-show="isHovered"
+                                    ref="video"
+                                    poster="https://i.gifer.com/ZZ5H.gif"
+                                    muted
+                                    controls
+                                    width="516"
+                                    height="290"
+                                    class="item-preview-video"></video>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-else>Empty</div>
+                    <div v-else>Empty</div>
+                </template>
             </div>
         </div>
     </main>
@@ -87,7 +97,9 @@ export default {
     props: {},
     data() {
         return {
-            courseId: null,
+            // courseId: null,
+            // lessonId: null,
+
             course: null,
             availability: `&#128274;`,
             isHovered: false,
@@ -97,6 +109,17 @@ export default {
         courseVideoPreviewLink() {
             return this.course?.meta?.courseVideoPreview?.link;
         },
+        urlLessonId() {
+            return this.$route.params.lessonId;
+        },
+        urlCourseId() {
+            return this.$route.params.courseId;
+        },
+        lesson() {
+            if (!this.course) return null;
+
+            return this.course.lessons.find((e) => e.id === this.urlLessonId);
+        },
     },
     methods: {
         convertDate(isoFormat) {
@@ -104,7 +127,7 @@ export default {
         },
         async updateCourse() {
             try {
-                const course = await getCourse(this.courseId);
+                const course = await getCourse(this.urlCourseId);
                 this.course = course.data;
             } catch (err) {
                 console.log(err);
@@ -113,7 +136,7 @@ export default {
         },
     },
     created() {
-        this.courseId = this.$route.params.courseId;
+        // this.courseId = this.$route.params.courseId;
     },
     async mounted() {
         await this.updateCourse();
@@ -134,10 +157,15 @@ export default {
             if (!video || !stream) return;
 
             if (newValue) {
-                video.play();
                 video.currentTime = 0;
+                video.play();
+            } else {
+                video.pause();
             }
         },
+        // $route (newValue) {
+        //     const route =
+        // }
     },
 };
 </script>
@@ -204,9 +232,10 @@ export default {
     }
 
     .course-launch-date {
+        padding: 0.4rem 0.9rem;
+        min-width: 138px;
         text-align: right;
         color: rgb(255, 255, 255);
-        padding: 0.4rem 0.9rem;
         font-size: 1.25rem;
         border-radius: 5px;
         background: rgba(0, 0, 0, 0.3);
