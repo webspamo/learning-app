@@ -27,3 +27,5 @@ npm run dev
 ```sh
 npm run build
 ```
+### !! Use ChromeExtension "Allow CORS" to avoid Blocking by CORS policy error:
+https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf
