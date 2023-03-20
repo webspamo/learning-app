@@ -11,7 +11,7 @@ export default createRouter({
             component: CoursesPage,
         },
         {
-            path: "/course/:courseId",
+            path: "/course/:courseId/:lessonId?",
             component: CoursePage,
         },
     ],
