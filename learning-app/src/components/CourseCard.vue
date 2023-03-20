@@ -1,27 +1,27 @@
 <template>
-    <div class="item">
-        <div class="item-content">
-            <h4 class="item-title">{{ title }}</h4>
+    <div class="card">
+        <div class="card-content">
+            <h4 class="card-title">{{ title }}</h4>
 
             <CourseTags
-                class="item-tags"
+                class="card-tags"
                 :tags="tags" />
 
-            <div class="item-rating">
+            <div class="card-rating">
                 <div>{{ rating }}</div>
             </div>
 
             <CourseAvailability
-                class="item-availability"
+                class="card-availability"
                 v-if="!containsLockedLessons"
                 :availability="availability" />
 
-            <div class="item-text-details">
-                <p class="item-description">
+            <div class="card-text-details">
+                <p class="card-description">
                     {{ description }}
                 </p>
                 <hr />
-                <ul class="item-skills">
+                <ul class="card-skills">
                     <li
                         class="skill"
                         v-for="(skill, index) in skills"
@@ -31,17 +31,17 @@
                 </ul>
             </div>
 
-            <div class="item-controls">
+            <div class="card-controls">
                 <router-link
                     :to="'/course/' + id"
-                    class="item-button button">
+                    class="card-button button">
                     Enroll now <span>&#8594;</span>
                 </router-link>
             </div>
         </div>
 
         <div
-            class="item-video-content"
+            class="card-video-content"
             @mouseenter="isHovered = true"
             @mouseleave="isHovered = false">
             <img
@@ -50,7 +50,7 @@
                 alt=""
                 width="516"
                 height="290"
-                class="item-preview-image" />
+                class="card-preview-image" />
             <video
                 v-show="isHovered"
                 ref="video"
@@ -59,7 +59,7 @@
                 controls
                 width="516"
                 height="290"
-                class="item-preview-video"></video>
+                class="card-preview-video"></video>
         </div>
     </div>
 </template>
@@ -67,11 +67,11 @@
 <script>
 import Hls from "hls.js";
 
-import CourseTags from "../components/CourseTags.vue";
+import CourseTags from "./CourseTags.vue";
 import CourseAvailability from "./CourseAvailability.vue";
 
 export default {
-    name: "CourseItem",
+    name: "Coursecard",
     components: {CourseTags, CourseAvailability},
     props: {
         id: String,
@@ -99,6 +99,7 @@ export default {
             let hls = new Hls();
             let stream = this.videoPreviewLink;
             let video = this.$refs["video"];
+            if (!video || !stream) return;
 
             hls.loadSource(stream);
             hls.attachMedia(video);
@@ -111,8 +112,10 @@ export default {
             if (!video || !stream) return;
 
             if (newValue) {
-                video.play();
                 video.currentTime = 0;
+                video.play();
+            } else {
+                video.pause();
             }
         },
     },
@@ -127,7 +130,7 @@ hr {
     margin: 0.5rem 0;
 }
 
-.item {
+.card {
     position: relative;
     height: 340px;
     padding: 1.5rem;
@@ -178,7 +181,7 @@ hr {
         align-items: center;
         justify-content: center;
     }
-    .item-availability {
+    .card-availability {
         position: absolute;
         top: -1.3rem;
         left: -1.5rem;
@@ -221,7 +224,7 @@ hr {
 
     &-controls {
         margin-top: auto;
-        .item-button {
+        .card-button {
             color: black;
 
             display: inline-flex;
@@ -233,12 +236,11 @@ hr {
         }
     }
 
-    .item-video-content {
-        .item-preview-image {
+    .card-video-content {
+        .card-preview-image {
             object-fit: cover;
         }
-        .item-preview-video {
-            //display: none;
+        .card-preview-video {
         }
     }
 }

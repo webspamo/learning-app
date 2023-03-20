@@ -6,7 +6,7 @@
                 <hr />
 
                 <div class="courses">
-                    <CourseItem
+                    <CourseCard
                         v-for="course in pageItems"
                         :key="course.id"
                         :id="course.id"
@@ -28,7 +28,7 @@
                         :video-preview-image-link="
                             course.previewImageLink && course.previewImageLink
                         ">
-                    </CourseItem>
+                    </CourseCard>
 
                     <div v-if="!courses.length">Empty</div>
                 </div>
@@ -51,11 +51,11 @@
 <script>
 import {getCourses} from "@/api/courses.js";
 
-import CourseItem from "../components/CourseItem.vue";
+import CourseCard from "../components/CourseCard.vue";
 
 export default {
     name: "CoursesPage",
-    components: {CourseItem},
+    components: {CourseCard},
     data() {
         return {
             courses: [],
