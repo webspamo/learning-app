@@ -3,7 +3,11 @@
         <div class="section">
             <div class="container course-container">
                 <template v-if="urlLessonId && lesson">
-                    lesson {{ lesson }}
+                    <div class="lesson">
+                        <h1 class="lesson-title">
+                            {{ lesson.title }}
+                        </h1>
+                    </div>
                 </template>
                 <template v-else>
                     <div
@@ -15,7 +19,7 @@
                                     :to="
                                         '/course/' + course.id + '/' + lesson.id
                                     "
-                                    class="lesson"
+                                    class="lesson-item"
                                     v-for="(lesson, index) in course.lessons"
                                     :key="index">
                                     <div class="lesson-content">
@@ -52,29 +56,13 @@
                                     :tags="course.tags" />
                             </div>
 
-                            <div
-                                class="item-video-content"
-                                @mouseenter="isHovered = true"
-                                @mouseleave="isHovered = false">
-                                <img
-                                    v-show="!isHovered"
-                                    :src="
-                                        course.previewImageLink + '/cover.webp'
-                                    "
-                                    alt=""
-                                    width="516"
-                                    height="290"
-                                    class="item-preview-image" />
-                                <video
-                                    v-show="isHovered"
-                                    ref="video"
-                                    poster="https://i.gifer.com/ZZ5H.gif"
-                                    muted
-                                    controls
-                                    width="516"
-                                    height="290"
-                                    class="item-preview-video"></video>
-                            </div>
+                            <VideoContent
+                                :width="videoContent.width"
+                                :height="videoContent.height"
+                                :image-link="this.courseImagePreviewLink"
+                                :image-alt="videoContent.imageAlt"
+                                :mouse-leave-prop="videoContent.mouseLeaveProp"
+                                :video-link="this.courseVideoPreviewLink" />
                         </div>
                     </div>
                     <div v-else>Empty</div>
@@ -86,26 +74,35 @@
 
 <script>
 import {getCourse} from "@/api/courses.js";
-import Hls from "hls.js";
 
+import VideoContent from "../components/VideoContent.vue";
 import CourseTags from "../components/CourseTags.vue";
 import CourseAvailability from "../components/CourseAvailability.vue";
 
 export default {
     name: "CoursePage",
-    components: {CourseTags, CourseAvailability},
+    components: {
+        CourseTags,
+        CourseAvailability,
+        VideoContent,
+    },
     props: {},
     data() {
         return {
-            // courseId: null,
-            // lessonId: null,
-
             course: null,
             availability: `&#128274;`,
-            isHovered: false,
+            videoContent: {
+                width: 516,
+                height: 290,
+                imageAlt: "Course image preview",
+                mouseLeaveProp: "remember",
+            },
         };
     },
     computed: {
+        courseImagePreviewLink() {
+            return this.course?.previewImageLink + "/cover.webp";
+        },
         courseVideoPreviewLink() {
             return this.course?.meta?.courseVideoPreview?.link;
         },
@@ -118,7 +115,9 @@ export default {
         lesson() {
             if (!this.course) return null;
 
-            return this.course.lessons.find((e) => e.id === this.urlLessonId);
+            return this.course.lessons.find(
+                (lesson) => lesson.id === this.urlLessonId
+            );
         },
     },
     methods: {
@@ -135,37 +134,9 @@ export default {
             }
         },
     },
-    created() {
-        // this.courseId = this.$route.params.courseId;
-    },
+    created() {},
     async mounted() {
         await this.updateCourse();
-
-        if (Hls.isSupported()) {
-            let hls = new Hls();
-            let stream = this.courseVideoPreviewLink;
-            let video = this.$refs["video"];
-
-            hls.loadSource(stream);
-            hls.attachMedia(video);
-        }
-    },
-    watch: {
-        async isHovered(newValue) {
-            let video = this.$refs["video"];
-            let stream = this.courseVideoPreviewLink;
-            if (!video || !stream) return;
-
-            if (newValue) {
-                video.currentTime = 0;
-                video.play();
-            } else {
-                video.pause();
-            }
-        },
-        // $route (newValue) {
-        //     const route =
-        // }
     },
 };
 </script>
@@ -192,7 +163,7 @@ export default {
     display: flex;
     flex-direction: column;
 }
-.lesson {
+.lesson-item {
     padding: 0.7rem;
     border-left: 6px solid transparent;
     border-radius: 5px;
@@ -246,14 +217,6 @@ export default {
 
     &-tags {
         display: flex;
-    }
-}
-
-.item-video-content {
-    .item-preview-image {
-        object-fit: cover;
-    }
-    .item-preview-video {
     }
 }
 </style>

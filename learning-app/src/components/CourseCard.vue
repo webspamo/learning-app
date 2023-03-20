@@ -40,39 +40,28 @@
             </div>
         </div>
 
-        <div
-            class="card-video-content"
-            @mouseenter="isHovered = true"
-            @mouseleave="isHovered = false">
-            <img
-                v-show="!isHovered"
-                :src="videoPreviewImageLink + '/cover.webp'"
-                alt=""
-                width="516"
-                height="290"
-                class="card-preview-image" />
-            <video
-                v-show="isHovered"
-                ref="video"
-                src=""
-                muted
-                controls
-                width="516"
-                height="290"
-                class="card-preview-video"></video>
-        </div>
+        <VideoContent
+            :width="videoContent.width"
+            :height="videoContent.height"
+            :image-link="this.videoPreviewImageLink + '/cover.webp'"
+            :image-alt="videoContent.imageAlt"
+            :mouse-leave-prop="videoContent.mouseLeaveProp"
+            :video-link="this.videoPreviewLink" />
     </div>
 </template>
 
 <script>
-import Hls from "hls.js";
-
 import CourseTags from "./CourseTags.vue";
 import CourseAvailability from "./CourseAvailability.vue";
+import VideoContent from "./VideoContent.vue";
 
 export default {
     name: "Coursecard",
-    components: {CourseTags, CourseAvailability},
+    components: {
+        CourseTags,
+        CourseAvailability,
+        VideoContent,
+    },
     props: {
         id: String,
         title: String,
@@ -89,35 +78,14 @@ export default {
     data() {
         return {
             availability: "Free",
-            isHovered: false,
+            videoContent: {
+                width: 516,
+                height: 290,
+                imageAlt: "Course image preview",
+                mouseLeaveProp: "reset",
+                videoPoster: "https://i.gifer.com/ZZ5H.gif",
+            },
         };
-    },
-    computed: {},
-    methods: {},
-    mounted() {
-        if (Hls.isSupported()) {
-            let hls = new Hls();
-            let stream = this.videoPreviewLink;
-            let video = this.$refs["video"];
-            if (!video || !stream) return;
-
-            hls.loadSource(stream);
-            hls.attachMedia(video);
-        }
-    },
-    watch: {
-        async isHovered(newValue) {
-            let video = this.$refs["video"];
-            let stream = this.videoPreviewLink;
-            if (!video || !stream) return;
-
-            if (newValue) {
-                video.currentTime = 0;
-                video.play();
-            } else {
-                video.pause();
-            }
-        },
     },
 };
 </script>
@@ -233,14 +201,6 @@ hr {
             span {
                 font-family: Arial;
             }
-        }
-    }
-
-    .card-video-content {
-        .card-preview-image {
-            object-fit: cover;
-        }
-        .card-preview-video {
         }
     }
 }
