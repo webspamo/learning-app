@@ -7,7 +7,7 @@ export default createRouter({
     history: createWebHashHistory(),
     routes: [
         {
-            path: "/",
+            path: "/courses",
             component: CoursesPage,
         },
         {
