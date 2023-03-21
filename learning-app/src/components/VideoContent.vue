@@ -78,11 +78,22 @@ export default {
                     } else {
                         video.pause();
                     }
+
                     break;
                 case "remember":
                     if (newValue) {
                         video.currentTime = this.currentVideoProgress;
-                        video.play();
+                        let playPromise = video.play();
+
+                        if (playPromise !== undefined) {
+                            playPromise
+                                .then((_) => {
+                                    video.play();
+                                })
+                                .catch((error) => {
+                                    video.pause();
+                                });
+                        }
                     } else {
                         video.pause();
                         this.currentVideoProgress = video.currentTime;
