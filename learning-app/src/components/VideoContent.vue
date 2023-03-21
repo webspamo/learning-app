@@ -74,7 +74,17 @@ export default {
                 case "reset":
                     if (newValue) {
                         video.currentTime = 0;
-                        video.play();
+                        let playPromise = video.play();
+
+                        if (playPromise !== undefined) {
+                            playPromise
+                                .then((_) => {
+                                    video.play();
+                                })
+                                .catch((error) => {
+                                    video.pause();
+                                });
+                        }
                     } else {
                         video.pause();
                     }
