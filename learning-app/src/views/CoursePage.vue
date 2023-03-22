@@ -8,6 +8,11 @@
                             <h1 class="lesson-title">
                                 {{ lesson.title }}
                             </h1>
+                            <VideoContent
+                                :image-link="`${lesson.previewImageLink}/lesson-${lesson.order}.webp`"
+                                :image-alt="videoContent.lessonImageAlt"
+                                :mouse-leave-prop="videoContent.mouseLeaveProp"
+                                :video-link="lesson.link" />
                         </div>
                     </template>
 
@@ -73,7 +78,7 @@
                                         :image-link="
                                             this.courseImagePreviewLink
                                         "
-                                        :image-alt="videoContent.imageAlt"
+                                        :image-alt="videoContent.courseImageAlt"
                                         :mouse-leave-prop="
                                             videoContent.mouseLeaveProp
                                         "
@@ -111,7 +116,8 @@ export default {
             course: null,
             availability: `&#128274;`,
             videoContent: {
-                imageAlt: "Course image preview",
+                courseImageAlt: "Course image preview",
+                lessonImageAlt: "Lesson image preview",
                 mouseLeaveProp: "remember",
             },
         };
@@ -172,6 +178,12 @@ export default {
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.07);
     color: rgba(255, 255, 255, 0.75);
+}
+
+.lesson {
+    &-title {
+        margin-bottom: 1.5rem;
+    }
 }
 
 .course-wrapper {
