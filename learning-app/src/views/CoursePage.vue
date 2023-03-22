@@ -64,8 +64,6 @@
                             </div>
 
                             <VideoContent
-                                :width="videoContent.width"
-                                :height="videoContent.height"
                                 :image-link="this.courseImagePreviewLink"
                                 :image-alt="videoContent.imageAlt"
                                 :mouse-leave-prop="videoContent.mouseLeaveProp"
@@ -99,8 +97,6 @@ export default {
             course: null,
             availability: `&#128274;`,
             videoContent: {
-                width: 516,
-                height: 290,
                 imageAlt: "Course image preview",
                 mouseLeaveProp: "remember",
             },

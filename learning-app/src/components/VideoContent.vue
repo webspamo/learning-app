@@ -1,26 +1,24 @@
 <template>
     <div
-        class="video-content"
+        class="aspect-ratio--16x9"
         @mouseenter="isHovered = true"
         @mouseleave="isHovered = false">
-        <img
-            v-show="!isHovered"
-            ref="previewImage"
-            :src="imageLink"
-            :alt="imageAlt"
-            :width="width"
-            :height="height"
-            class="preview-image" />
+        <div class="aspect-ratio__inner-wrapper">
+            <img
+                v-show="!isHovered"
+                ref="previewImage"
+                :src="imageLink"
+                :alt="imageAlt"
+                class="preview-image" />
 
-        <video
-            v-show="isHovered"
-            ref="video"
-            :poster="videoPoster"
-            muted
-            controls
-            :width="width"
-            :height="height"
-            class="preview-video"></video>
+            <video
+                v-show="isHovered"
+                ref="video"
+                :poster="videoPoster"
+                muted
+                controls
+                class="video"></video>
+        </div>
     </div>
 </template>
 
@@ -31,8 +29,6 @@ export default {
     name: "VideoContent",
     components: {},
     props: {
-        width: Number,
-        height: Number,
         imageLink: String,
         imageAlt: String,
         mouseLeaveProp: String,
@@ -140,11 +136,26 @@ export default {
 <style lang="scss" scoped>
 @use "@/assets/styles/_mixins";
 
-.video-content {
-    .preview-image {
-        object-fit: cover;
-    }
-    .preview-video {
-    }
+.aspect-ratio--16x9 {
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+    position: relative;
+}
+
+.aspect-ratio__inner-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+.preview-image,
+.video {
+    width: 100%;
+    height: 100%;
+}
+.preview-image {
+    object-fit: cover;
 }
 </style>

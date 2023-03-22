@@ -39,14 +39,13 @@
                 </router-link>
             </div>
         </div>
-
-        <VideoContent
-            :width="videoContent.width"
-            :height="videoContent.height"
-            :image-link="this.videoPreviewImageLink + '/cover.webp'"
-            :image-alt="videoContent.imageAlt"
-            :mouse-leave-prop="videoContent.mouseLeaveProp"
-            :video-link="this.videoPreviewLink" />
+        <div class="card-video-content">
+            <VideoContent
+                :image-link="this.videoPreviewImageLink + '/cover.webp'"
+                :image-alt="videoContent.imageAlt"
+                :mouse-leave-prop="videoContent.mouseLeaveProp"
+                :video-link="this.videoPreviewLink" />
+        </div>
     </div>
 </template>
 
@@ -79,8 +78,6 @@ export default {
         return {
             availability: "Free",
             videoContent: {
-                width: 516,
-                height: 290,
                 imageAlt: "Course image preview",
                 mouseLeaveProp: "reset",
                 videoPoster: "https://i.gifer.com/ZZ5H.gif",
@@ -120,6 +117,13 @@ hr {
 
         display: flex;
         flex-direction: column;
+    }
+    &-video-content {
+        position: relative;
+        min-width: 45%;
+
+        display: flex;
+        align-items: center;
     }
 
     &-title {
