@@ -46,6 +46,7 @@ ul {
 button {
     border: none;
 
+
     &:hover {
         cursor: pointer;
     }
@@ -53,9 +54,10 @@ button {
 
 .button {
     padding: 0.5rem 0.75rem;
-    font-family: "Josefin Sans", sans-serif;
-    font-weight: 500;
+    // font-family: "Josefin Sans", sans-serif;
+    font-weight: 400;
     font-size: 1.25rem;
+    color: black;
     border-radius: 5px;
     background-color: #fdc500;
 

@@ -193,8 +193,6 @@ hr {
     &-controls {
         margin-top: auto;
         .card-button {
-            color: black;
-
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;

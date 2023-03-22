@@ -9,7 +9,14 @@
                         </h1>
                     </div>
                 </template>
+
                 <template v-else>
+                    <router-link
+                        to="/courses"
+                        class="back-button button">
+                        <span>&#8592;</span> All Courses
+                    </router-link>
+
                     <div
                         v-if="course"
                         class="course-wrapper">
@@ -143,6 +150,13 @@ export default {
 
 <style lang="scss" scoped>
 @use "@/assets/styles/_mixins";
+
+.section {
+    .container:first-child {
+        position: relative; //back-to button
+    }
+}
+
 .course-container {
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.07);
@@ -217,6 +231,22 @@ export default {
 
     &-tags {
         display: flex;
+    }
+}
+
+.back-button {
+    position: absolute;
+    top: -2.5rem;
+    left: 2rem;
+    vertical-align: center;
+    transform: translateY(-50%);
+
+    display: inline-flex;
+    //align-items: center;
+    gap: 0.3rem;
+
+    span {
+        font-family: Arial;
     }
 }
 </style>
