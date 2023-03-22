@@ -5,6 +5,7 @@
         @mouseleave="isHovered = false">
         <img
             v-show="!isHovered"
+            ref="previewImage"
             :src="imageLink"
             :alt="imageAlt"
             :width="width"
@@ -37,14 +38,14 @@ export default {
         mouseLeaveProp: String,
         videoLink: {
             type: String,
-            default: "/src/assets/videos/video-not-found.webm",
+            default: "/src/assets/videos/loading-preview.webm",
         },
     },
     data() {
         return {
             isHovered: false,
             currentVideoProgress: 0,
-            videoPoster: "/src/assets/videos/loading-preview.mp4",
+            videoPoster: "/src/assets/images/loading-preview.gif",
         };
     },
     methods: {
@@ -52,6 +53,7 @@ export default {
             localStorage.setItem("videoProgress", this.currentVideoProgress);
         },
     },
+
     mounted() {
         if (localStorage.getItem("videoProgress")) {
             this.currentVideoProgress = localStorage.getItem("videoProgress");
@@ -63,13 +65,28 @@ export default {
 
             hls.loadSource(stream);
             hls.attachMedia(video);
+
+            let retried = false;
+
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                const errorType = data.type;
+
+                if (errorType === Hls.ErrorTypes.NETWORK_ERROR) {
+                    if (!retried) {
+                        video.poster =
+                            "/src/assets/images/video-not-found.jpeg";
+                        retried = true;
+                    }
+                }
+            });
         }
     },
     watch: {
         async isHovered(newValue) {
             let video = this.$refs["video"];
             let stream = this.videoLink;
-            if (!video || !stream) return;
+            if (!stream || !video) return;
+
             switch (this.mouseLeaveProp) {
                 case "reset":
                     if (newValue) {
