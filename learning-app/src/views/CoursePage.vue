@@ -4,6 +4,12 @@
             <div class="container">
                 <div class="course-container">
                     <template v-if="urlLessonId && lesson">
+                        <router-link
+                            :to="`/course/ + ${course.id}`"
+                            class="back-button button">
+                            <span>&#8592;</span> Back to Course
+                        </router-link>
+
                         <div class="lesson">
                             <h1 class="lesson-title">
                                 {{ lesson.title }}
