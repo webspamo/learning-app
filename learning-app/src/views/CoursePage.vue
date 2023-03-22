@@ -1,55 +1,66 @@
 <template>
     <main>
         <div class="section">
-            <div class="container course-container">
-                <template v-if="urlLessonId && lesson">
-                    <div class="lesson">
-                        <h1 class="lesson-title">
-                            {{ lesson.title }}
-                        </h1>
-                    </div>
-                </template>
+            <div class="container">
+                <div class="course-container">
+                    <template v-if="urlLessonId && lesson">
+                        <div class="lesson">
+                            <h1 class="lesson-title">
+                                {{ lesson.title }}
+                            </h1>
+                        </div>
+                    </template>
 
-                <template v-else>
-                    <router-link
-                        to="/courses"
-                        class="back-button button">
-                        <span>&#8592;</span> All Courses
-                    </router-link>
+                    <template v-else>
+                        <router-link
+                            to="/courses"
+                            class="back-button button">
+                            <span>&#8592;</span> All Courses
+                        </router-link>
 
-                    <div
-                        v-if="course"
-                        class="course-wrapper">
-                        <aside class="course-aside">
-                            <nav class="lessons-list">
-                                <router-link
-                                    :to="
-                                        '/course/' + course.id + '/' + lesson.id
-                                    "
-                                    class="lesson-item"
-                                    v-for="(lesson, index) in course.lessons"
-                                    :key="index">
-                                    <div class="lesson-content">
-                                        <div class="lesson-title">
-                                            {{ lesson.title }}
+                        <div
+                            v-if="course"
+                            class="course-wrapper">
+                            <aside class="course-aside">
+                                <nav class="lessons-list">
+                                    <router-link
+                                        :to="
+                                            '/course/' +
+                                            course.id +
+                                            '/' +
+                                            lesson.id
+                                        "
+                                        class="lesson-item"
+                                        v-for="(
+                                            lesson, index
+                                        ) in course.lessons"
+                                        :key="index">
+                                        <div class="lesson-content">
+                                            <div class="lesson-title">
+                                                {{ lesson.title }}
+                                            </div>
                                         </div>
+
+                                        <CourseAvailability
+                                            class="lesson-availability"
+                                            v-if="lesson.status === 'locked'"
+                                            v-html="availability" />
+                                    </router-link>
+                                </nav>
+                            </aside>
+
+                            <div class="course">
+                                <div class="course-header">
+                                    <div class="course-header-details">
+                                        <h1 class="course-title">
+                                            {{ course.title }}
+                                        </h1>
+
+                                        <CourseTags
+                                            class="course-tags"
+                                            :tags="course.tags" />
                                     </div>
-
-                                    <CourseAvailability
-                                        class="lesson-availability"
-                                        v-if="lesson.status === 'locked'"
-                                        v-html="availability" />
-                                </router-link>
-                            </nav>
-                        </aside>
-
-                        <div class="course">
-                            <div class="course-header">
-                                <div class="title-cover">
-                                    <h1 class="course-title">
-                                        {{ course.title }}
-                                    </h1>
-                                    <div class="course-launch-date">
+                                    <div class="course-header-launch-date">
                                         <span>Course-start</span>
                                         <hr />
                                         <span>
@@ -57,21 +68,24 @@
                                         </span>
                                     </div>
                                 </div>
-
-                                <CourseTags
-                                    class="course-tags"
-                                    :tags="course.tags" />
+                                <div class="video-content">
+                                    <VideoContent
+                                        :image-link="
+                                            this.courseImagePreviewLink
+                                        "
+                                        :image-alt="videoContent.imageAlt"
+                                        :mouse-leave-prop="
+                                            videoContent.mouseLeaveProp
+                                        "
+                                        :video-link="
+                                            this.courseVideoPreviewLink
+                                        " />
+                                </div>
                             </div>
-
-                            <VideoContent
-                                :image-link="this.courseImagePreviewLink"
-                                :image-alt="videoContent.imageAlt"
-                                :mouse-leave-prop="videoContent.mouseLeaveProp"
-                                :video-link="this.courseVideoPreviewLink" />
                         </div>
-                    </div>
-                    <div v-else>Empty</div>
-                </template>
+                        <div v-else>Empty</div>
+                    </template>
+                </div>
             </div>
         </div>
     </main>
@@ -154,6 +168,7 @@ export default {
 }
 
 .course-container {
+    padding: 2rem;
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.07);
     color: rgba(255, 255, 255, 0.75);
@@ -204,6 +219,9 @@ export default {
 
     &-header {
         margin-bottom: 1.5rem;
+
+        display: flex;
+        justify-content: space-between;
     }
     .title-cover {
         display: flex;
@@ -212,10 +230,13 @@ export default {
         }
     }
 
-    .course-launch-date {
+    .course-header-launch-date {
+        align-self: flex-start;
+
         padding: 0.4rem 0.9rem;
         min-width: 138px;
         text-align: right;
+        white-space: nowrap; // above 1200px $desktop
         color: rgb(255, 255, 255);
         font-size: 1.25rem;
         border-radius: 5px;
@@ -228,6 +249,10 @@ export default {
     &-tags {
         display: flex;
     }
+}
+
+.video-content {
+    position: relative;
 }
 
 .back-button {
@@ -245,4 +270,9 @@ export default {
         font-family: Arial;
     }
 }
+
+// @include mixins.below(desktop) {
+//     height: unset;
+//     flex-direction: column;
+// }
 </style>

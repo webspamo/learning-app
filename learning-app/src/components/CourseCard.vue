@@ -99,7 +99,7 @@ hr {
     position: relative;
     height: 340px;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 0.5rem;
 
     display: flex;
