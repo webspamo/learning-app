@@ -5,7 +5,7 @@
                 <div class="course-container">
                     <template v-if="urlLessonId && lesson">
                         <router-link
-                            :to="`/course/ + ${course.id}`"
+                            :to="'/course/' + course.id"
                             class="back-button button">
                             <span>&#8592;</span> Back to Course
                         </router-link>
