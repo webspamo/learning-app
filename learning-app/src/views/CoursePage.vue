@@ -30,13 +30,15 @@
                             <span>&#8592;</span> All Courses
                         </router-link>
 
+                        <!--  -->
                         <div
                             v-if="course"
                             class="course-wrapper">
                             <aside class="course-aside">
                                 <nav class="lessons-list">
-                                    <router-link
-                                        :to="'/course/' + course.id + '/' + lesson.id"
+                                    <a
+                                        :href="'/course/' + course.id + '/' + lesson.id"
+                                        @click.prevent="handleLessonSelection(lesson)"
                                         class="lesson-item"
                                         v-for="(lesson, index) in course.lessons"
                                         :key="index">
@@ -50,10 +52,9 @@
                                             class="lesson-availability"
                                             v-if="lesson.status === 'locked'"
                                             v-html="availability" />
-                                    </router-link>
+                                    </a>
                                 </nav>
                             </aside>
-
                             <div class="course">
                                 <div class="course-header">
                                     <div class="course-header-details">
@@ -83,7 +84,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-else>Empty</div>
+                        <div v-else>Sorry, no courses available</div>
                     </template>
                 </div>
             </div>
@@ -133,7 +134,7 @@ export default {
         lesson() {
             if (!this.course) return null;
 
-            return this.course.lessons.find((lesson) => lesson.id === this.urlLessonId);
+            return this.course.lessons.find((lesson) => lesson.id === this.urlLessonId && lesson.status === "unlocked");
         },
     },
     methods: {
@@ -148,6 +149,13 @@ export default {
                 console.log(err);
                 this.course = null;
             }
+        },
+        handleLessonSelection(lesson) {
+            if (!lesson || !lesson.status || lesson.status !== "unlocked") {
+                return;
+            }
+
+            this.$router.push("/course/" + this.course.id + "/" + lesson.id);
         },
     },
     created() {},
@@ -187,7 +195,7 @@ export default {
 .course-aside {
     padding: 0.5rem;
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
 }
 .lessons-list {
     display: flex;
@@ -210,15 +218,13 @@ export default {
 
     &-title {
     }
-
-    &-content {
-    }
-
-    &-availability {
-        padding: 0.1rem 0.5rem;
-        background: rgba(255, 255, 255, 0.2);
-    }
 }
+
+.lesson-availability {
+    padding: 0.1rem 0.5rem;
+    background: rgba(255, 255, 255, 0.9);
+}
+
 .course {
     flex-grow: 1;
 
