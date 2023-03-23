@@ -43,7 +43,7 @@
             <VideoContent
                 :image-link="this.videoPreviewImageLink + '/cover.webp'"
                 :image-alt="videoContent.imageAlt"
-                :mouse-leave-prop="videoContent.mouseLeaveProp"
+                :on-mouse-leave-behaviour="videoContent.mouseLeaveProp"
                 :video-link="this.videoPreviewLink" />
         </div>
     </div>
@@ -80,7 +80,6 @@ export default {
             videoContent: {
                 imageAlt: "Course image preview",
                 mouseLeaveProp: "reset",
-                videoPoster: "https://i.gifer.com/ZZ5H.gif",
             },
         };
     },

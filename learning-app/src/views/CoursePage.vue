@@ -15,9 +15,10 @@
                                 {{ lesson.title }}
                             </h1>
                             <VideoContent
+                                :material-id="lesson.id"
                                 :image-link="`${lesson.previewImageLink}/lesson-${lesson.order}.webp`"
                                 :image-alt="videoContent.lessonImageAlt"
-                                :mouse-leave-prop="videoContent.mouseLeaveProp"
+                                :on-mouse-leave-behaviour="videoContent.mouseLeaveProp"
                                 :video-link="lesson.link" />
                         </div>
                     </template>
@@ -35,16 +36,9 @@
                             <aside class="course-aside">
                                 <nav class="lessons-list">
                                     <router-link
-                                        :to="
-                                            '/course/' +
-                                            course.id +
-                                            '/' +
-                                            lesson.id
-                                        "
+                                        :to="'/course/' + course.id + '/' + lesson.id"
                                         class="lesson-item"
-                                        v-for="(
-                                            lesson, index
-                                        ) in course.lessons"
+                                        v-for="(lesson, index) in course.lessons"
                                         :key="index">
                                         <div class="lesson-content">
                                             <div class="lesson-title">
@@ -81,16 +75,11 @@
                                 </div>
                                 <div class="video-content">
                                     <VideoContent
-                                        :image-link="
-                                            this.courseImagePreviewLink
-                                        "
+                                        :material-id="this.course.id"
+                                        :image-link="this.courseImagePreviewLink"
                                         :image-alt="videoContent.courseImageAlt"
-                                        :mouse-leave-prop="
-                                            videoContent.mouseLeaveProp
-                                        "
-                                        :video-link="
-                                            this.courseVideoPreviewLink
-                                        " />
+                                        :on-mouse-leave-behaviour="videoContent.mouseLeaveProp"
+                                        :video-link="this.courseVideoPreviewLink" />
                                 </div>
                             </div>
                         </div>
@@ -144,9 +133,7 @@ export default {
         lesson() {
             if (!this.course) return null;
 
-            return this.course.lessons.find(
-                (lesson) => lesson.id === this.urlLessonId
-            );
+            return this.course.lessons.find((lesson) => lesson.id === this.urlLessonId);
         },
     },
     methods: {
@@ -252,7 +239,6 @@ export default {
         align-self: flex-start;
 
         padding: 0.4rem 0.9rem;
-        min-width: 138px;
         text-align: right;
         white-space: nowrap; // above 1200px $desktop
         color: rgb(255, 255, 255);
