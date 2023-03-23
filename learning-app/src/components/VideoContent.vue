@@ -29,9 +29,10 @@ export default {
     name: "VideoContent",
     components: {},
     props: {
+        materialId: String,
         imageLink: String,
         imageAlt: String,
-        mouseLeaveProp: String,
+        onMouseLeaveBehaviour: String,
         videoLink: {
             type: String,
             default: "/src/assets/videos/loading-preview.webm",
@@ -40,20 +41,35 @@ export default {
     data() {
         return {
             isHovered: false,
-            currentVideoProgress: 0,
             videoPoster: "/src/assets/images/loading-preview.gif",
         };
     },
     methods: {
-        updateLocalStorage() {
-            localStorage.setItem("videoProgress", this.currentVideoProgress);
+        preventPlayInterruption(video) {
+            let playPromise = video.play();
+
+            if (playPromise !== undefined) {
+                playPromise
+                    .then((_) => {
+                        video.play();
+                    })
+                    .catch((error) => {
+                        video.pause();
+                    });
+            }
+        },
+        resetVideo(video) {
+            if (!video) return;
+
+            video.currentTime = 0;
+            this.preventPlayInterruption(video);
+        },
+        saveCurrentTime(time) {
+            localStorage.setItem(this.materialId, time);
         },
     },
 
     mounted() {
-        if (localStorage.getItem("videoProgress")) {
-            this.currentVideoProgress = localStorage.getItem("videoProgress");
-        }
         if (Hls.isSupported()) {
             let hls = new Hls();
             let stream = this.videoLink;
@@ -69,65 +85,42 @@ export default {
 
                 if (errorType === Hls.ErrorTypes.NETWORK_ERROR) {
                     if (!retried) {
-                        video.poster =
-                            "/src/assets/images/video-not-found.jpeg";
+                        video.poster = "/src/assets/images/video-not-found.jpeg";
                         retried = true;
                     }
                 }
             });
         }
     },
+    created() {},
     watch: {
         async isHovered(newValue) {
             let video = this.$refs["video"];
             let stream = this.videoLink;
+
             if (!stream || !video) return;
 
-            switch (this.mouseLeaveProp) {
-                case "reset":
-                    if (newValue) {
-                        video.currentTime = 0;
-                        let playPromise = video.play();
+            if (newValue) {
+                video.currentTime = 0;
+                this.preventPlayInterruption(video);
 
-                        if (playPromise !== undefined) {
-                            playPromise
-                                .then((_) => {
-                                    video.play();
-                                })
-                                .catch((error) => {
-                                    video.pause();
-                                });
-                        }
-                    } else {
-                        video.pause();
+                if (this.onMouseLeaveBehaviour === "remember") {
+                    let savedTime = localStorage.getItem(this.materialId);
+
+                    if (savedTime) {
+                        video.currentTime = savedTime;
                     }
-
-                    break;
-                case "remember":
-                    if (newValue) {
-                        video.currentTime = this.currentVideoProgress;
-                        let playPromise = video.play();
-
-                        if (playPromise !== undefined) {
-                            playPromise
-                                .then((_) => {
-                                    video.play();
-                                })
-                                .catch((error) => {
-                                    video.pause();
-                                });
-                        }
-                    } else {
-                        video.pause();
-                        this.currentVideoProgress = video.currentTime;
-                    }
-                    break;
+                }
             }
-        },
-        currentVideoProgress: {
-            handler() {
-                this.updateLocalStorage();
-            },
+
+            if (!newValue) {
+                video.pause();
+
+                if (this.onMouseLeaveBehaviour === "remember") {
+                    this.saveCurrentTime(video.currentTime);
+                }
+                return;
+            }
         },
     },
 };
